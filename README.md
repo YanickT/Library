@@ -17,7 +17,7 @@ I am a little bit pargamatic corresponding to the look of the tool.
 Maybe it will be improved in the future.
 
 
-If you have any ideas how to improve or find bugs it please tell me.
+If you have any ideas how to improve or find bugs please tell me.
 
 ## Usage
 ### Setup
