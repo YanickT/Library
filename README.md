@@ -50,6 +50,20 @@ Click on a Connection to configre its proberties.
 I think the other possibilties explain themselves.
 But maybe I will write something to this... some day (sorry :)).
 
+### Tipps:
+Place a run_library.py file at your Desktop.
+Insert:
+```
+import os
+
+PATH = "<path to main.py>"
+
+os.startfile(PATH)
+os.startfile("<url to the website>")
+```
+
+When you double click it, the library is started and your default browser will open the website.
+
 
 ## TODO:
 - Make administration.py more elegant (remove redundant code)
