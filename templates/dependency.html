@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block header %}
+<link href="../static/styles/dependency.css" type="text/css" rel="stylesheet"/>
+{% endblock %}
+
+{% block dependency %}active{% endblock %}
+
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row">
+
+        <div class="col-sm-4">
+            <div class="panel panel-default">
+                <div class="panel-heading"><h2>Articles</h2></div>
+                <div class="panel-body">
+                    <ul id="article-holder">
+                        {%for article_id, article, author in articles%}
+                            <li class="item article">[{{article_id}}] {{article}} ({{author}})</li>
+                        {%endfor%}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-4">
+            <div class="panel panel-default">
+                <div class="panel-heading"><h2>Connection</h2></div>
+                <div class="panel-body">
+                    <h3>Parent article:</h3>
+                    <ul>
+                        <li class="item selected" id="parent"></li>
+                    </ul>
+                    <h3>Child article:</h3>
+                    <ul id="child"></ul>
+                    <span onclick="add_dependency()" class="button">Create dependency</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-4">
+            <div class="panel panel-default">
+                <div class="panel-heading"><h2>Dependencies</h2></div>
+                <div class="panel-body">
+                    <ul id="depends-holder">
+                        {%for id_, parent, child, comment in depends%}
+                            {% if comment != "" %}
+                                <li class="item depend" id="{{id_}}">[{{parent}}] > [{{child}}]: {{comment}}</li>
+                            {% else %}
+                                <li class="item depend" id="{{id_}}">[{{parent}}] > [{{child}}]</li>
+                            {% endif %}
+                        {%endfor%}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="../static/js/dependency.js"></script>
+{% endblock %}

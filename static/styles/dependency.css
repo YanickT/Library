@@ -1,0 +1,60 @@
+/* Include the padding and border in an element's total width and height */
+* {
+  box-sizing: border-box;
+}
+
+/* Remove margins and padding from the list */
+ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+/* Style the list items */
+ul li.item {
+  cursor: pointer;
+  position: relative;
+  padding: 12px 8px 12px 40px;
+  background: #eee;
+  font-size: 18px;
+  transition: 0.2s;
+
+  /* make the list items unselectable */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Set all odd list items to a different color (zebra-stripes) */
+ul li.item:nth-child(odd) {
+  background: #f9f9f9;
+}
+
+/* Darker background-color on hover */
+ul li.item:hover {
+  background: #ddd;
+}
+
+.panel-body {
+  /* height: 480px; */
+  height: calc(100vh - 200px);
+  overflow-y: auto;
+}
+
+.button {
+  padding: 10px;
+  width: 100%;
+  background: #222222;
+  color: #9d9d9d;
+  float: left;
+  text-align: center;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+  border-radius: 0;
+}
+
+.button:hover {
+  background-color: #bbb;
+}

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block header %}
+<link href="../static/styles/dependency_update.css" type="text/css" rel="stylesheet"/>
+{% endblock %}
+
+{% block dependency %}active{% endblock %}
+
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row">
+
+        <div class="col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-heading"><h2>{{title_parent}} ({{author_parent}})  >  {{title_child}} ({{author_child}})</h2></div>
+                <div class="panel-body">
+                    <form action="/dependency/{{depend_id}}", method="post">
+                        <label for="comment">Commentary:</label><br>
+                        <textarea id="comment" name="comment" class="textbox" rows="10">{{comment}}</textarea> <br>
+
+                        <input type="submit" name="action" value="Submit" class="button">
+                        <input type="submit" name="action" value="Delete" class="button kill">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

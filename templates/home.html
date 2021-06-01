@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block home %}active{% endblock %}
+
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12" id="wrapper">
+            <img id="image">
+                {{chart_output|safe}}
+            </img>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="../static/js/home.js"></script>
+{% endblock %}

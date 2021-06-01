@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block update_page %}active{% endblock %}
+
+{% block body %}
+<div class="container">
+    <form action="/update/{{article}}", method="post">
+        <label for="title">Title:</label><br>
+        <input type="text" id="title" name="title" value='{{ title }}'><br>
+
+        <label for="author">Author:</label><br>
+        <input type="text" id="author" name="author" value='{{ author }}'><br>
+
+        <label for="page">Current Page:</label><br>
+        <input type="number" id="page" name="page" value='{{ cur_page }}'> / {{pages}}<br>
+
+        <input type="submit" value="Submit">
+    </form>
+</div>
+{% endblock %}

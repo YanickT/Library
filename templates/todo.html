@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block header %}
+<link href="../static/styles/todo.css" type="text/css" rel="stylesheet"/>
+{% endblock %}
+
+{% block todo %}active{% endblock %}
+
+{% block body %}
+<!-- Add Task to list -->
+<div class="header">
+    <h2 class="head_title">Add Task</h2>
+    <form action="/todo", method="post">
+        <input type="text" id="comment" name="comment" placeholder="Add task here">
+
+        <input type="submit" value="Submit" class="itemer">
+    </form>
+</div>
+
+
+<!-- List of Tasks -->
+<ul>
+    {%for task in tasks%}
+        <li class="item">{{task}}</li>
+    {%endfor%}
+</ul>
+
+<script type="text/javascript" src="../static/js/todo.js"></script>
+{% endblock %}
