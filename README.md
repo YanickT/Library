@@ -34,7 +34,7 @@ Start the main.py
 Open the website at the link which is presented by python.
 
 ### Working 
-Place papers in the Articles directory at your path
+Place papers in the Articles directory at your path.
 The system will check all articles every start or if you press the Library button on the web page
 
 Zoom whit the mouse wheel into the graph.
