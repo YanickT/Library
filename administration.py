@@ -2,8 +2,8 @@ import os
 import graphviz
 import sqlite3
 from PyPDF2 import PdfFileReader
+from path import PATH
 
-PATH = "C:/Users/yanic/Documents/Library/"
 ARTPATH = PATH + "Article/"
 ARTICLEFILE = "article.db"
 STATEMENTS = [
@@ -146,7 +146,13 @@ class Connection:
         return ARTPATH
 
     def drop_file_by_name(self, filename):
-        statement = f"DELETE FROM articles WHERE filename = {filename}"
+        statement = f"SELECT article_id FROM articles WHERE filename = '{filename}'"
+        id_ = self.get(statement)[0][0]
+        # remove dependencies
+        statement = f"DELETE FROM depends WHERE article_id = '{id_}' OR child_id = '{id_}'"
+        self.execute(statement)
+        # remove article
+        statement = f"DELETE FROM articles WHERE filename = '{filename}'"
         self.execute(statement)
 
     def sync(self):
