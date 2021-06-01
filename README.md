@@ -13,7 +13,7 @@ It can be found at: https://graphviz.org/
 ## Notes
 I am developing and improving this tool currently.
 Furthermore, I am actively working with it and therefore 
-I am a little bit pargamatic corresponding to the look of the tool.
+I am a little bit pragmatic corresponding to the look of the tool.
 Maybe it will be improved in the future.
 
 
