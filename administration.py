@@ -72,7 +72,7 @@ class Connection:
 
     def add(self, table, *data):
         self.images = {}
-        data = [f"'{e}'" if isinstance(e, str) else f"{e}" for e in data]
+        data = [f"'{e}'" if isinstance(e, str) else str(e) for e in data]
         self.execute(f"INSERT INTO {table} VALUES (NULL, {','.join(data)})")
 
     def update(self, table, column, value, **conditions):
@@ -107,12 +107,12 @@ class Connection:
                 infos = pdf.getDocumentInfo()
                 pages = pdf.getNumPages()
 
-            if infos.title != "":
+            if infos.title != "" and infos.title is not None:
                 title = infos.title
             else:
                 title = file[:-4]
 
-            if infos.author != "":
+            if infos.author != "" and infos.author is not None:
                 author = infos.author
             else:
                 author = "Unkown author"
