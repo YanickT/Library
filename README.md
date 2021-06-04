@@ -40,7 +40,6 @@ Install graphviz and the required packages:
 
 create a "path.py" and insert the following line:
 ```PATH = "<your path were to add the working data>"```.
-
 Create an "Article" folder within `PATH`.
 Therefore, you should have such a structure (example):
 ```
@@ -49,6 +48,8 @@ Therefore, you should have such a structure (example):
       |- Article <add papers into this folder>
       <an article.db will be automatically created here>
 ```
+In this example is `PATH = "...\Library"`
+
 Start the main.py
 
 Open the website at the link which is presented by python.
