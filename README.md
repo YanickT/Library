@@ -39,7 +39,8 @@ Install graphviz and the required packages:
 - pypdf2
 
 create a "path.py" and insert the following line:
-```PATH = "<your path were to add the working data>"```
+```PATH = "<your path were to add the working data>"```.
+
 Create an "Article" folder within `PATH`.
 
 Start the main.py
@@ -83,3 +84,4 @@ When you double click it, the library is started and your default browser will o
 - add non weight dependency
 - add summery option to paper
 - make paper green with checkbox to indicate it is finished
+- write a proper installer or at least something which creates the necessary folders
