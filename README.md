@@ -13,11 +13,11 @@ It can be found at: https://graphviz.org/
 ## Notes
 I am developing and improving this tool currently.
 Furthermore, I am actively working with it and therefore 
-I am a little bit pargamatic corresponding to the look of the tool.
+I am a little bit pragmatic corresponding to the look of the tool.
 Maybe it will be improved in the future.
 
 
-If you have any ideas how to improve or find bugs it please tell me.
+If you have any ideas how to improve or find bugs please tell me.
 
 ## Updates
 Added column for unconnected articles.
@@ -39,10 +39,11 @@ create a "path.py" and insert the following line:
 ```PATH = "<your path were to add the working data>"```
 
 Start the main.py
+
 Open the website at the link which is presented by python.
 
 ### Working 
-Place papers in the Articles directory at your path
+Place papers in the Articles directory at your path.
 The system will check all articles every start or if you press the Library button on the web page
 
 Zoom whit the mouse wheel into the graph.
@@ -57,6 +58,20 @@ Click on a Connection to configre its proberties.
 
 I think the other possibilties explain themselves.
 But maybe I will write something to this... some day (sorry :)).
+
+### Tipps:
+Place a run_library.py file at your Desktop.
+Insert:
+```
+import os
+
+PATH = "<path to main.py>"
+
+os.startfile(PATH)
+os.startfile("<url to the website>")
+```
+
+When you double click it, the library is started and your default browser will open the website.
 
 
 ## TODO:
