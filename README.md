@@ -40,6 +40,7 @@ Install graphviz and the required packages:
 
 create a "path.py" and insert the following line:
 ```PATH = "<your path were to add the working data>"```
+Create an "Article" folder within `PATH`.
 
 Start the main.py
 
