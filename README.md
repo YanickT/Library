@@ -3,7 +3,10 @@
 Library is a simple tool to structure papers and their connections.
 
 It is developed while my master thesis preparing, and was born by the urge to structure the papers I am currently reading.
-An example image can be seen below. The titles of the articles were blurred out after taking the image.
+An example image can be seen below. 
+
+
+The titles of the articles were blurred out after taking the image.
 ![Example image](images/example.png)
 
 ## Requirements

@@ -116,7 +116,7 @@ class Connection:
                 author = infos.author
             else:
                 author = "Unkown author"
-            self.add_file(file, title, author, pages)
+            self.add("articles", file, title, author, pages, 0)
 
     def drop_file_by_name(self, filename):
         id_ = self.get("articles", "article_id", filename=filename)[0][0]
@@ -125,10 +125,6 @@ class Connection:
         self.execute(statement)
         # remove article
         statement = f"DELETE FROM articles WHERE filename = '{filename}'"
-        self.execute(statement)
-
-    def add_file(self, filename, title, author, pages):
-        statement = f"INSERT INTO articles VALUES (NULL, '{filename}', '{title}','{author}', '{pages}', 0)"
         self.execute(statement)
 
     def get_dependency_graph(self, main_url, depend_url):
