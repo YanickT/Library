@@ -1,15 +1,33 @@
 {% extends "base.html" %}
 
-{% block home %}active{% endblock %}
+{% block header %}
+<link href="../static/styles/dependency.css" type="text/css" rel="stylesheet"/>
+{% endblock %}
 
+{% block home %}active{% endblock %}
 
 {% block body %}
 <div class="container-fluid">
     <div class="row">
-        <div class="col-sm-12" id="wrapper">
-            <img id="image">
-                {{chart_output|safe}}
-            </img>
+        <div class="col-sm-9">
+            <div class="panel panel-default">
+                <div class="panel-heading"><h2>Connected</h2></div>
+                <div class="panel-body"  id="wrapper">
+                    <img id="image">
+                        {{main_graph|safe}}
+                    </img>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="panel panel-default">
+                <div class="panel-heading"><h2>Unconnected</h2></div>
+                <div class="panel-body" id="solo_wrapper">
+                    <img>
+                        {{solo_graph|safe}}
+                    </img>
+                </div>
+            </div>
         </div>
     </div>
 </div>

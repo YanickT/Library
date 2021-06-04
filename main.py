@@ -7,7 +7,8 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return render_template('home.html', chart_output=BASE.get_dependency_graph("/articles", "/dependency"))
+    main_graph, solo_graph = BASE.get_dependency_graph("/articles", "/dependency")
+    return render_template('home.html', main_graph=main_graph, solo_graph=solo_graph)
 
 
 @app.route('/sync')
@@ -18,22 +19,23 @@ def sync():
 
 @app.route('/update')
 def update_page():
-    return render_template('home_update.html', chart_output=BASE.get_dependency_graph("/update", "/dependency"))
+    main_graph, solo_graph = BASE.get_dependency_graph("/update", "/dependency")
+    return render_template('home_update.html', main_graph=main_graph, solo_graph=solo_graph)
 
 
 @app.route('/update/<article>', methods=['POST', 'GET'])
 def update_article(article: int):
     if request.method == "GET":
         return render_template('paper_update.html',
-                               title=BASE.get_title(article),
-                               author=BASE.get_author(article),
-                               pages=BASE.get_pages(article),
-                               cur_page=BASE.get_curpage(article),
+                               title=BASE.get("articles", "title", article_id=int(article))[0][0],
+                               author=BASE.get("articles", "author", article_id=int(article))[0][0],
+                               pages=BASE.get("articles", "pages", article_id=int(article))[0][0],
+                               cur_page=BASE.get("articles", "cur_page", article_id=int(article))[0][0],
                                article=article)
     else:
-        BASE.update_curpage(article, request.form["page"])
-        BASE.update_title(article, request.form["title"])
-        BASE.update_author(article, request.form["author"])
+        BASE.update("articles", "cur_page", int(request.form["page"]), article_id=int(article))
+        BASE.update("articles", "title", request.form["title"], article_id=int(article))
+        BASE.update("articles", "author", request.form["author"], article_id=int(article))
         return redirect(url_for("update_page"))
 
 
@@ -41,9 +43,9 @@ def update_article(article: int):
 def get_article(article: int):
     # open if extern connection is made possible (within LAN only)
     if not request.remote_addr == request.host and False:
-        return send_from_directory(BASE.get_path(), BASE.get_filename(article))
+        return send_from_directory(BASE.get_path(), BASE.get("articles", "filename", article_id=int(article))[0][0])
 
-    os.startfile(BASE.get_path() + BASE.get_filename(article))
+    os.startfile(BASE.get_path() + BASE.get("articles", "filename", article_id=int(article))[0][0])
     return redirect(url_for("home"))
 
 
@@ -51,41 +53,41 @@ def get_article(article: int):
 def todo():
     if request.method == "POST":
         if request.form:
-            BASE.add_task(request.form["comment"])
+            BASE.add("tasks", request.form["comment"])
         else:
-            BASE.remove_task(request.json["remove"])
+            BASE.drop("tasks", comment=request.json["remove"])
 
-    return render_template('todo.html', tasks=BASE.get_tasks())
+    return render_template('todo.html', tasks=[task[0] for task in BASE.get("tasks", "comment")])
 
 
 @app.route('/dependency', methods=['POST', 'GET'])
 def dependency():
     if request.method == "POST":
         for child in request.json["childs"]:
-            BASE.add_dependency(int(request.json["parent"]), int(child))
-    articles = BASE.get_articles()
-    id_title = [(article[0], article[1], article[2]) for article in articles]
-    return render_template('dependency.html', articles=id_title, depends=BASE.get_dependencies())
+            BASE.add("depends", int(request.json["parent"]), int(child), "")
+    articles = BASE.get("articles", "article_id", "title", "author")
+    return render_template('dependency.html', articles=articles, depends=BASE.get("depends", "*"))
 
 
 @app.route('/dependency/<index>', methods=['POST', 'GET'])
 def dependency_edit(index):
     if request.method == "POST":
         if request.form["action"] == "Submit":
-            BASE.update_depends_comment(index, request.form["comment"])
+            BASE.update("depends", "comment", request.form["comment"], depend_id=int(index))
         elif request.form["action"] == "Delete":
-            BASE.drop_depend(index)
+            print("Drop")
+            BASE.drop("depends", depend_id=index)
 
         return redirect(url_for("dependency"))
 
-    depend_id, parent_id, child_id, comment = BASE.get_dependency(index)
+    depend_id, parent_id, child_id, comment = BASE.get("depends", "*", depend_id=int(index))[0]
     return render_template("dependency_update.html",
                            depend_id=depend_id,
                            comment=comment,
-                           title_parent=BASE.get_title(parent_id),
-                           author_parent=BASE.get_author(parent_id),
-                           title_child=BASE.get_title(child_id),
-                           author_child=BASE.get_author(child_id))
+                           title_parent=BASE.get("articles", "title", article_id=int(parent_id))[0][0],
+                           author_parent=BASE.get("articles", "author", article_id=int(parent_id))[0][0],
+                           title_child=BASE.get("articles", "title", article_id=int(child_id))[0][0],
+                           author_child=BASE.get("articles", "author", article_id=int(child_id))[0][0])
 
 
 if __name__ == "__main__":
@@ -98,5 +100,5 @@ if __name__ == "__main__":
 
 
 # IN UPDATE PAPER MACHEN:
-# TODO: Reiter Zusammenfassungen: Darin sollen die Wichtigsten Inhalte der Paper dargestellt werden (wenn draufklick)
+# TODO: Reiter Zusammenfassungen: Darin sollen die wichtigsten Inhalte der Paper dargestellt werden (wenn draufklick)
 # TODO: Außerdem Fragen....

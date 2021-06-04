@@ -1,10 +1,18 @@
 // adjust width of svg
 var wrapper = document.getElementById("wrapper");
-var width = wrapper.getBoundingClientRect()["width"] - 25;
+var width = wrapper.getBoundingClientRect()["width"] - 40;
 var height = wrapper.getBoundingClientRect()["height"];
 var svg = document.getElementsByTagName("svg")[0];
 svg.setAttribute("width", width);
 svg.setAttribute("height", height);
+
+// adjust width of the svg (solo image)
+var wrapper_solo = document.getElementById("solo_wrapper");
+var width = wrapper_solo.getBoundingClientRect()["width"] - 40;
+var height = wrapper_solo.getBoundingClientRect()["height"];
+var svg_2 = document.getElementsByTagName("svg")[1];
+svg_2.setAttribute("width", width);
+svg_2.setAttribute("height", height);
 
 
 // zoom with mouse wheel
@@ -63,7 +71,6 @@ function move(event) {
 
 function start(event) {
     event.preventDefault();
-    console.log("down");
     position = { x: event.pageX, y: event.pageY };
     document.body.style.cursor = 'move';
     run = true;
@@ -71,7 +78,6 @@ function start(event) {
 
 function end(event) {
     event.preventDefault();
-    console.log("up");
     position = { x: event.pageX, y: event.pageY };
     document.body.style.cursor = 'auto'
     run = false;

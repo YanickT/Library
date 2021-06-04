@@ -3,7 +3,7 @@
 Library is a simple tool to structure papers and their connections.
 
 It is developed while my master thesis preparing, and was born by the urge to structure the papers I am currently reading.
-
+An example image can be seen below. The titles of the articles were blurred out after taking the image.
 ![Example image](images/example.png)
 
 ## Requirements
@@ -18,6 +18,15 @@ Maybe it will be improved in the future.
 
 
 If you have any ideas how to improve or find bugs it please tell me.
+
+## Updates
+Added column for unconnected articles.
+They are now seperated from the connected ones
+
+Improved performance of loading by home and update... 
+The images are now generated before
+
+Refractor administration.py
 
 ## Usage
 ### Setup
@@ -51,9 +60,7 @@ But maybe I will write something to this... some day (sorry :)).
 
 
 ## TODO:
-- Make administration.py more elegant (remove redundant code)
 - Improve paper update form
-- add column in home for non connected papers with rankdir = "LR"
 - add non weight dependency
 - add summery option to paper
 - make paper green with checkbox to indicate it is finished

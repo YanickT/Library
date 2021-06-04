@@ -36,6 +36,8 @@ class Connection:
         for statement in STATEMENTS:
             self.execute(statement)
 
+        self.images = {}
+
     @staticmethod
     def execute(statement):
         conn = sqlite3.connect(PATH + ARTICLEFILE)
@@ -45,119 +47,52 @@ class Connection:
         conn.close()
 
     @staticmethod
-    def get(statement):
+    def get(table, *columns, **conditions):
         conn = sqlite3.connect(PATH + ARTICLEFILE)
         cur = conn.cursor()
-        cur.execute(statement)
+        if not conditions:
+            cur.execute(f"SELECT {','.join(columns)} FROM {table}")
+        else:
+            conditions = [
+                f"{key} = '{conditions[key]}'" if isinstance(conditions[key], str) else f"{key} = {conditions[key]}" for
+                key in conditions]
+            cur.execute(f"SELECT {','.join(columns)} FROM {table} WHERE {'AND'.join(conditions)}")
         data = cur.fetchall()
         conn.close()
         return data
 
-    def get_articles(self):
-        statement = "SELECT article_id, title, author, pages, cur_page FROM articles"
-        return self.get(statement)
+    def drop(self, table, **conditions):
+        self.images = {}
+        if not conditions:
+            raise ValueError("No condition specified")
+        conditions = [
+            f"{key} = '{conditions[key]}'" if isinstance(conditions[key], str) else f"{key} = {conditions[key]}" for
+            key in conditions]
+        self.execute(f"DELETE FROM {table} WHERE {'AND'.join(conditions)}")
 
-    def get_dependency_graph(self, main_url, depend_url):
-        articles = self.get_articles()
-        graph = graphviz.Digraph()
-        graph.graph_attr["nodesep"] = "1"
-        graph.graph_attr["ranksep"] = "1"
+    def add(self, table, *data):
+        self.images = {}
+        data = [f"'{e}'" if isinstance(e, str) else f"{e}" for e in data]
+        self.execute(f"INSERT INTO {table} VALUES (NULL, {','.join(data)})")
 
-        # add nodes
-        for index, title, author, pages, curpage in articles:
-            percentage = curpage / pages
-            node = f"""
-                N{index} [
-                shape=plain
-                label=<
-                    <table cellborder="0" cellspacing="5">
-                        <tr><td colspan="2">{title}</td></tr>
-                        <tr><td colspan="2">{author}</td></tr>
-                        <tr><td border="1" width="50" bgcolor="#6da8ce;{min(percentage + 0.01, 1):.2f}:white"></td><td color="white">{percentage * 100:.0f}%</td></tr>
-                    </table>
-                >
-                URL = "{main_url}/{index}"
-                ]
-                """
-            graph.body.append(node)
-
-        # add edges
-        depends = self.get_dependencies()
-        ids = [article[0] for article in articles]
-        for index, from_, to_, comment in depends:
-            if from_ not in ids or to_ not in ids:
-                continue
-            graph.edge(f"N{from_}", f"N{to_}", comment, URL=f"{depend_url}/{index}", headport="n", tailport="s")
-
-        return graph.pipe(format='svg').replace(b"\r\n", b"").decode('utf-8')
-
-    def get_pages(self, article):
-        statement = f"SELECT pages FROM articles WHERE article_id = {article}"
-        pages = self.get(statement)[0][0]
-        return pages
-
-    def get_curpage(self, article):
-        statement = f"SELECT cur_page FROM articles WHERE article_id = {article}"
-        page = self.get(statement)[0][0]
-        return page
-
-    def update_curpage(self, article, page):
-        statement = f"UPDATE articles SET cur_page = {page} WHERE article_id = {article}"
-        self.execute(statement)
-
-    def get_filename(self, article):
-        statement = f"SELECT filename FROM articles WHERE article_id = {article}"
-        file = self.get(statement)[0][0]
-        return file
-
-    def get_author(self, article):
-        statement = f"SELECT author FROM articles WHERE article_id = {article}"
-        author = self.get(statement)[0][0]
-        return author
-
-    def update_author(self, article, author):
-        statement = f"UPDATE articles SET author = '{author}' WHERE article_id = {article}"
-        self.execute(statement)
-
-    def get_title(self, article):
-        statement = f"SELECT title FROM articles WHERE article_id = {article}"
-        title = self.get(statement)[0][0]
-        return title
-
-    def get_titles(self):
-        statement = f"SELECT title FROM articles"
-        title = [row[0] for row in self.get(statement)]
-        return title
-
-    def update_title(self, article, title):
-        statement = f"UPDATE articles SET title = '{title}' WHERE article_id = {article}"
-        self.execute(statement)
-
-    def add_file(self, filename, title, author, pages):
-        statement = f"INSERT INTO articles VALUES (NULL, '{filename}', '{title}','{author}', '{pages}', 0)"
-        self.execute(statement)
-
-    def get_filenames(self):
-        statement = f"SELECT filename FROM articles"
-        filenames = [row[0] for row in self.get(statement)]
-        return filenames
+    def update(self, table, column, value, **conditions):
+        self.images = {}
+        value = f"'{value}'" if isinstance(value, str) else value
+        if not conditions:
+            raise ValueError("No condition specified")
+        conditions = [
+            f"{key} = '{conditions[key]}'" if isinstance(conditions[key], str) else f"{key} = {conditions[key]}" for
+            key in conditions]
+        self.execute(f"UPDATE {table} SET {column} = {value} WHERE {'AND'.join(conditions)}")
 
     def get_path(self):
         return ARTPATH
 
-    def drop_file_by_name(self, filename):
-        statement = f"SELECT article_id FROM articles WHERE filename = '{filename}'"
-        id_ = self.get(statement)[0][0]
-        # remove dependencies
-        statement = f"DELETE FROM depends WHERE article_id = '{id_}' OR child_id = '{id_}'"
-        self.execute(statement)
-        # remove article
-        statement = f"DELETE FROM articles WHERE filename = '{filename}'"
-        self.execute(statement)
-
     def sync(self):
+        self.images = {}
+
         files = [file for file in os.listdir(ARTPATH) if file[-4:] == ".pdf"]
-        db_files = self.get_filenames()
+        db_files = [row[0] for row in self.get("articles", "filename")]
 
         # check for files in database but not articles
         [self.drop_file_by_name(file) for file in db_files if file not in files]
@@ -183,40 +118,79 @@ class Connection:
                 author = "Unkown author"
             self.add_file(file, title, author, pages)
 
-
-    def get_tasks(self):
-        statement = f"SELECT comment FROM tasks"
-        tasks = [row[0] for row in self.get(statement)]
-        return tasks
-
-    def add_task(self, task):
-        statement = f"INSERT INTO tasks VALUES (NULL, '{task}')"
+    def drop_file_by_name(self, filename):
+        id_ = self.get("articles", "article_id", filename=filename)[0][0]
+        # remove dependencies
+        statement = f"DELETE FROM depends WHERE article_id = '{id_}' OR child_id = '{id_}'"
+        self.execute(statement)
+        # remove article
+        statement = f"DELETE FROM articles WHERE filename = '{filename}'"
         self.execute(statement)
 
-    def remove_task(self, task):
-        statement = f"DELETE FROM tasks WHERE comment = '{task}'"
+    def add_file(self, filename, title, author, pages):
+        statement = f"INSERT INTO articles VALUES (NULL, '{filename}', '{title}','{author}', '{pages}', 0)"
         self.execute(statement)
 
+    def get_dependency_graph(self, main_url, depend_url):
+        if (main_url, depend_url) not in self.images:
+            self.create_images(main_url, depend_url)
+        return tuple(self.images[main_url, depend_url])
 
-    def add_dependency(self, parent, child, comment=""):
-        statement = f"INSERT INTO depends VALUES (NULL, {parent}, {child}, '{comment}')"
-        self.execute(statement)
+    def create_images(self, main_url, depend_url):
+        articles = self.get("articles", "article_id", "title", "author", "pages", "cur_page")
+        main_graph = graphviz.Digraph()
+        main_graph.graph_attr["nodesep"] = "1"
+        main_graph.graph_attr["ranksep"] = "1"
+        main_graph.graph_attr["id"] = "main_graph"
 
-    def get_dependencies(self):
-        statement = "SELECT * FROM depends"
-        return self.get(statement)
+        solo_graph = graphviz.Graph()
+        solo_graph.graph_attr["rankdir"] = "LR"
+        solo_graph.graph_attr["id"] = "solo_graph"
 
-    def get_dependency(self, index):
-        statement = f"SELECT * FROM depends WHERE depend_id = {index}"
-        return self.get(statement)[0]
+        depends = self.get("depends", "*")
 
-    def update_depends_comment(self, index, comment):
-        statement = f"UPDATE depends SET comment = '{comment}' WHERE depend_id = {index}"
-        self.execute(statement)
+        connected_articles = [(e[1], e[2]) for e in depends]
+        if depends:
+            connected_articles = tuple(zip(*connected_articles))
+            connected_articles = list(connected_articles[0]) + list(connected_articles[1])
 
-    def drop_depend(self, index):
-        statement = f"DELETE FROM depends WHERE depend_id = '{index}'"
-        self.execute(statement)
+        # add nodes
+        for index, title, author, pages, curpage in articles:
+            ratio = curpage / pages
+            node = f"""
+                        N{index} [
+                        shape=plain
+                        label=<
+                            <table cellborder="0" cellspacing="5">
+                                <tr><td colspan="2">{title}</td></tr>
+                                <tr><td colspan="2">{author}</td></tr>
+                                <tr>
+                                    <td border="1" width="50" bgcolor="#6da8ce;{min(ratio + 0.01, 1):.2f}:white"></td>
+                                    <td color="white">{ratio * 100:.0f}%</td>
+                                </tr>
+                            </table>
+                        >
+                        URL = "{main_url}/{index}"
+                        ]
+                        """
+            if index in connected_articles:
+                main_graph.body.append(node)
+            else:
+                solo_graph.body.append(node)
+
+        # add edges
+        ids = [article[0] for article in articles]
+        for index, from_, to_, comment in depends:
+            if from_ not in ids or to_ not in ids:
+                continue
+            main_graph.edge(f"N{from_}", f"N{to_}", comment, URL=f"{depend_url}/{index}", headport="n", tailport="s")
+
+        main_img = main_graph.pipe(format='svg').replace(b"\r\n", b"").decode('utf-8')
+        solo_img = solo_graph.pipe(format='svg').replace(b"\r\n", b"").decode('utf-8')
+
+        # necessary to prevent id duplicates. Quick and dirty there has to be a proper way!
+        solo_img = solo_img.replace("l_", "solo_l_")
+        self.images[(main_url, depend_url)] = [main_img, solo_img]
 
 
 BASE = Connection()
