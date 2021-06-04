@@ -42,6 +42,11 @@ create a "path.py" and insert the following line:
 ```PATH = "<your path were to add the working data>"```.
 
 Create an "Article" folder within `PATH`.
+Therefore, you should have such a structure (example):
+...
+ |-Library
+      |- Article <add papers into this folder>
+      <an article.db will be automatically created here>
 
 Start the main.py
 
