@@ -21,7 +21,7 @@ Maybe it will be improved in the future.
 
 `os.startfile()` is used within this programm (as far as I know Windows only). 
 It therefore may not be compatible with operation systems besides windows.
-I have added a few lines of code which should make it possible for linux to but have not tested it.
+I have added a few lines of code which should make it possible for linux too but have not tested it.
 
 
 If you have any ideas how to improve or find bugs please tell me.
