@@ -19,27 +19,35 @@ Furthermore, I am actively working with it and therefore
 I am a little bit pragmatic corresponding to the look of the tool.
 Maybe it will be improved in the future.
 
+`os.startfile()` is used within this programm (as far as I know Windows only). 
+It therefore may not be compatible with operation systems besides windows.
+I have added a few lines of code which should make it possible for linux to but have not tested it.
+
 
 If you have any ideas how to improve or find bugs please tell me.
 
 ## Updates
-Added column for unconnected articles.
-They are now seperated from the connected ones
-
-Improved performance of loading by home and update... 
-The images are now generated before
-
-Refractor administration.py
+- Added new item to navbar which opens the folder for the articles
+- Change file opening (should work for other operating systems then windows now as well (not tested expect windows))
+- Simplified setup
 
 ## Usage
 ### Setup
 Install graphviz and the required packages:
 - flask
 - gravphiz
-- pypdf2
+- PyPDF2
 
+Start the main.py
+
+Open the website at the link which is presented by python.
+
+
+
+#### If automatic setup does not work:
 create a "path.py" and insert the following line:
 ```PATH = "<your path were to add the working data>"```.
+
 Create an "Article" folder within `PATH`.
 Therefore, you should have such a structure (example):
 ```
@@ -50,9 +58,6 @@ Therefore, you should have such a structure (example):
 ```
 In this example is `PATH = "...\Library"`
 
-Start the main.py
-
-Open the website at the link which is presented by python.
 
 ### Working 
 Place papers in the Articles directory at your path.

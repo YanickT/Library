@@ -23,7 +23,7 @@
           <li class="{% block update_page %}{% endblock %}"><a href="{{ url_for('update_page') }}">Update Papers</a></li>
           <li class="{% block dependency %}{% endblock %}"><a href="{{ url_for('dependency') }}">Dependencies</a></li>
           <li class="{% block todo %}{% endblock %}"><a href="{{url_for('todo')}}">TODO</a></li>
-          <li class="{% block not_ready %}{% endblock %}"><a href="#">Not yet ready</a></li>
+          <li class="{% block articles %}{% endblock %}"><a href="{{url_for('open_article_folder')}}">Articles</a></li>
         </ul>
       </div>
     </nav>

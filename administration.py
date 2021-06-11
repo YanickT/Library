@@ -1,8 +1,15 @@
 import os
-import graphviz
 import sqlite3
-from PyPDF2 import PdfFileReader
+
+# check if files exist:
+files = os.listdir(os.path.dirname(os.path.realpath(__file__)))
+if "path.py" not in files:
+    import create_folders
+    create_folders.run()
+
 from path import PATH
+import graphviz
+from PyPDF2 import PdfFileReader
 
 ARTPATH = PATH + "Article/"
 ARTICLEFILE = "article.db"

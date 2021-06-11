@@ -1,8 +1,21 @@
 from flask import Flask, render_template, send_from_directory, request, redirect, url_for
 from administration import BASE
 import os
+import sys
+import subprocess
+
 
 app = Flask(__name__)
+
+
+# open_file is taken from:
+# https://stackoverflow.com/questions/17317219/is-there-an-platform-independent-equivalent-of-os-startfile
+def open_file(filename):
+    if sys.platform == "win32":
+        os.startfile(filename)
+    else:
+        opener = "open" if sys.platform == "darwin" else "xdg-open"
+        subprocess.call([opener, filename])
 
 
 @app.route('/')
@@ -45,7 +58,7 @@ def get_article(article: int):
     if not request.remote_addr == request.host and False:
         return send_from_directory(BASE.get_path(), BASE.get("articles", "filename", article_id=int(article))[0][0])
 
-    os.startfile(BASE.get_path() + BASE.get("articles", "filename", article_id=int(article))[0][0])
+    open_file(BASE.get_path() + BASE.get("articles", "filename", article_id=int(article))[0][0])
     return redirect(url_for("home"))
 
 
@@ -90,15 +103,14 @@ def dependency_edit(index):
                            author_child=BASE.get("articles", "author", article_id=int(child_id))[0][0])
 
 
+@app.route('/add')
+def open_article_folder():
+    open_file(BASE.get_path())
+    return redirect(url_for("home"))
+
+
 if __name__ == "__main__":
     app.run()
 
+# TODO: Reiter für die Bildung von Flussclustern/Seperieren von Strukturen
 
-# GENERELLE IDEEN
-# TODO: Reiter "Add Paper" für Download from Arxiv usw. (Nur einfügen der URL)
-# TODO: Reiter für die Bildung von Flussclustern Seperieren von Strukturen
-
-
-# IN UPDATE PAPER MACHEN:
-# TODO: Reiter Zusammenfassungen: Darin sollen die wichtigsten Inhalte der Paper dargestellt werden (wenn draufklick)
-# TODO: Außerdem Fragen....
