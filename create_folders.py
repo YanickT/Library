@@ -43,8 +43,6 @@ class Widget:
         ttk.Button(frame_options, text="Select path", command=self.choose_path).pack(padx=5, pady=5, fill=tk.X)
         ttk.Button(frame_options, text="Create folders", command=self.create_folders).pack(padx=5, pady=5, fill=tk.X)
 
-
-
         for i, req in enumerate(requirements):
             if self.check_requirement(req):
                 checks[i].select()
@@ -85,9 +83,5 @@ class Widget:
         self.path_db.config(text=f"{self.path}/Library/article.db")
 
 
-def run():
-    Widget()
-
-
 if __name__ == "__main__":
-    run()
+    Widget()

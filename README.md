@@ -33,16 +33,22 @@ If you have any ideas how to improve or find bugs please tell me.
 
 ## Usage
 ### Setup
+#### Install requirements
 Install graphviz and the required packages:
 - flask
 - gravphiz
 - PyPDF2
 
-Start the main.py
+#### Create folders
+1. Start 'create_folder.py'
+2. Controll if all three checkmarks are set in the REQUIREMENTS-frame (cf. Image bellow)
+3. Select a path and create the folders
 
-Open the website at the link which is presented by python.
+![Setup image](images/setup.png)
 
-
+#### Getting to the GUI (graphical user interface)
+1. Start the main.py
+2. Open the website at the link which is presented by python
 
 #### If automatic setup does not work:
 create a "path.py" and insert the following line:
@@ -96,4 +102,3 @@ When you double click it, the library is started and your default browser will o
 - add non weight dependency
 - add summery option to paper
 - make paper green with checkbox to indicate it is finished
-- write a proper installer or at least something which creates the necessary folders

@@ -1,12 +1,5 @@
 import os
 import sqlite3
-
-# check if files exist:
-files = os.listdir(os.path.dirname(os.path.realpath(__file__)))
-if "path.py" not in files:
-    import create_folders
-    create_folders.run()
-
 from path import PATH
 import graphviz
 from PyPDF2 import PdfFileReader
