@@ -28,7 +28,7 @@ If you have any ideas how to improve or find bugs please tell me.
 
 ## Updates
 - Added new item to navbar which opens the folder for the articles
-- Change file opening (should work for other operating systems then windows now as well (not tested expect windows))
+- Change file opening (should work for other operating systems then windows now as well (not tested except windows))
 - Simplified setup
 
 ## Usage
