@@ -1,42 +1,42 @@
-// adjust width of svg
-var wrapper = document.getElementById("wrapper");
-var width = wrapper.getBoundingClientRect()["width"] - 40;
-var height = wrapper.getBoundingClientRect()["height"];
-var svg = document.getElementsByTagName("svg")[0];
-svg.setAttribute("width", width);
-svg.setAttribute("height", height);
+// adjust size of svgs
+function resize() {
+    var wrapper = document.getElementById("wrapper");
+    var width = wrapper.getBoundingClientRect()["width"] - 40;
+    var height = wrapper.getBoundingClientRect()["height"];
+    var svg = document.getElementsByTagName("svg")[0];
+    svg.setAttribute("width", width);
+    svg.setAttribute("height", height);
 
-// adjust width of the svg (solo image)
-var wrapper_solo = document.getElementById("solo_wrapper");
-var width = wrapper_solo.getBoundingClientRect()["width"] - 40;
-var height = wrapper_solo.getBoundingClientRect()["height"];
-var svg_2 = document.getElementsByTagName("svg")[1];
-svg_2.setAttribute("width", width);
-svg_2.setAttribute("height", height);
+    var wrapper_solo = document.getElementById("solo_wrapper");
+    var width = wrapper_solo.getBoundingClientRect()["width"] - 40;
+    var svg_2 = document.getElementsByTagName("svg")[1];
+    svg_2.setAttribute("width", width);
+}
 
+// adjust size for loading
+resize()
 
 // zoom with mouse wheel
 const zoomfactor = 0.1;
 
 function zoom(event) {
-  event.preventDefault();
-  var svg = document.getElementsByTagName("svg")[0];
-  if (event["deltaY"] < 0){
-      var modi = 1;
-  }
-  else {
-      var modi = -1;
-  }
+    event.preventDefault();
+    var svg = document.getElementsByTagName("svg")[0];
+    if (event["deltaY"] < 0) {
+        var modi = 1;
+    } else {
+        var modi = -1;
+    }
 
-  var viewbox = svg.getAttribute("viewBox");
-  var sizes = viewbox.split(" ").map(Number);
-  var dw = sizes[2] * modi * zoomfactor;
-  var dh = sizes[3] * modi * zoomfactor;
-  sizes[2] -= dw;
-  sizes[3] -= dh;
+    var viewbox = svg.getAttribute("viewBox");
+    var sizes = viewbox.split(" ").map(Number);
+    var dw = sizes[2] * modi * zoomfactor;
+    var dh = sizes[3] * modi * zoomfactor;
+    sizes[2] -= dw;
+    sizes[3] -= dh;
 
-  sizes = sizes.map(String);
-  svg.setAttribute("viewBox", sizes.join(" "));
+    sizes = sizes.map(String);
+    svg.setAttribute("viewBox", sizes.join(" "));
 }
 
 wrapper.onwheel = zoom;
@@ -49,7 +49,7 @@ var run = false;
 function move(event) {
     event.preventDefault();
     if (run) {
-        var mouse = { x: event.pageX, y: event.pageY };
+        var mouse = {x: event.pageX, y: event.pageY};
         var svg = document.getElementsByTagName("svg")[0];
         var viewbox = svg.getAttribute("viewBox");
         var sizes = viewbox.split(" ").map(Number);
@@ -71,18 +71,39 @@ function move(event) {
 
 function start(event) {
     event.preventDefault();
-    position = { x: event.pageX, y: event.pageY };
+    position = {x: event.pageX, y: event.pageY};
     document.body.style.cursor = 'move';
     run = true;
 }
 
 function end(event) {
     event.preventDefault();
-    position = { x: event.pageX, y: event.pageY };
+    position = {x: event.pageX, y: event.pageY};
     document.body.style.cursor = 'auto'
     run = false;
 }
 
+var svg = document.getElementsByTagName("svg")[0];
 document.onmousemove = move;
 svg.onmousedown = start;
-svg.onmouseup = end;
+document.onmouseup = end;
+
+
+// save current zoom when closing window
+window.onbeforeunload = function () {
+    var svg = document.getElementsByTagName("svg")[0];
+    var viewbox = svg.getAttribute("viewBox");
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/zoom", true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify({'viewbox': viewbox}));
+
+};
+
+
+// zoom window at correct position at the start
+function zoom_section(viewbox){
+    var svg = document.getElementsByTagName("svg")[0];
+    svg.setAttribute("viewBox", viewbox);
+}

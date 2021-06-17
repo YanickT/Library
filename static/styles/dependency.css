@@ -58,3 +58,7 @@ ul li.item:hover {
 .button:hover {
   background-color: #bbb;
 }
+
+.tight{
+  margin-top: 0!important;
+}

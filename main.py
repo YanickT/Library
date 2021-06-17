@@ -1,5 +1,5 @@
 from flask import Flask, render_template, send_from_directory, request, redirect, url_for
-from administration import BASE
+from administration import BASE, CONFIG
 import os
 import sys
 import subprocess
@@ -21,19 +21,26 @@ def open_file(filename):
 @app.route('/')
 def home():
     main_graph, solo_graph = BASE.get_dependency_graph("/articles", "/dependency")
-    return render_template('home.html', main_graph=main_graph, solo_graph=solo_graph)
+    return render_template('home.html', main_graph=main_graph, solo_graph=solo_graph, viewbox=CONFIG["viewbox"])
+
+
+@app.route('/zoom', methods=['POST'])
+def zoom():
+    CONFIG("viewbox", request.json["viewbox"])
+    return "dummy"
 
 
 @app.route('/sync')
 def sync():
     BASE.sync()
+    CONFIG("viewbox", None)
     return redirect(url_for("home"))
 
 
 @app.route('/update')
 def update_page():
     main_graph, solo_graph = BASE.get_dependency_graph("/update", "/dependency")
-    return render_template('home_update.html', main_graph=main_graph, solo_graph=solo_graph)
+    return render_template('home_update.html', main_graph=main_graph, solo_graph=solo_graph, viewbox=CONFIG["viewbox"])
 
 
 @app.route('/update/<article>', methods=['POST', 'GET'])
@@ -111,6 +118,4 @@ def open_article_folder():
 
 if __name__ == "__main__":
     app.run()
-
-# TODO: Reiter für die Bildung von Flussclustern/Seperieren von Strukturen
 

@@ -33,4 +33,7 @@
 </div>
 
 <script type="text/javascript" src="../static/js/home.js"></script>
+{% if viewbox %}
+    <script>zoom_section({{ viewbox | tojson }})</script>
+{% endif %}
 {% endblock %}

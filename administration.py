@@ -1,11 +1,13 @@
 import os
 import sqlite3
+import pickle
 from path import PATH
 import graphviz
 from PyPDF2 import PdfFileReader
 
 ARTPATH = PATH + "Article/"
 ARTICLEFILE = "article.db"
+CONFIGFILE = ".config"
 STATEMENTS = [
     """
     CREATE TABLE IF NOT EXISTS articles (
@@ -189,5 +191,28 @@ class Connection:
         self.images[(main_url, depend_url)] = [main_img, solo_img]
 
 
+class ConfigHandler:
+
+    def __init__(self):
+        # check if config file already exists
+        if not os.path.isfile(PATH + CONFIGFILE):
+            with open(PATH + CONFIGFILE, "wb") as doc:
+                pickle.dump({}, doc)
+
+    def __getitem__(self, item):
+        with open(PATH + CONFIGFILE, "rb") as doc:
+            data = pickle.load(doc)
+        return data.get(item)
+
+    def __call__(self, key, value):
+        with open(PATH + CONFIGFILE, "rb") as doc:
+            data = pickle.load(doc)
+        with open(PATH + CONFIGFILE, "wb") as doc:
+            data[key] = value
+            pickle.dump(data, doc)
+
+
 BASE = Connection()
 BASE.sync()
+
+CONFIG = ConfigHandler()
