@@ -1,9 +1,9 @@
 ---
 name: Feature request
 about: Suggest an idea for this project
-title: ''
-labels: ''
-assignees: ''
+title: Add Fearture
+labels: enhancement
+assignees: YanickT
 
 ---
 
