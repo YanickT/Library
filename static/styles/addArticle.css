@@ -1,0 +1,46 @@
+li.item {
+    cursor: pointer;
+    position: relative;
+    padding: 12px 8px 12px 40px;
+    background: #eee;
+    font-size: 18px;
+    transition: 0.2s;
+}
+
+ul li.item:nth-child(odd) {
+    background: #F5F5F5;
+}
+
+ul li.item:nth-child(even) {
+    background: #222222;
+    color: white;
+}
+
+ul li.grey-item {
+    cursor: pointer;
+    position: relative;
+    padding: 12px 8px 12px 40px;
+    font-size: 18px;
+    transition: 0.2s;
+    background: #AAAAAA;
+    color: #555555;
+
+}
+
+.button {
+    padding: 10px;
+    width: 100%;
+    background: #222222;
+    color: #9d9d9d;
+    float: left;
+    text-align: center;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+    border-radius: 0;
+}
+
+.kill {
+    background: red;
+    color: white;
+}

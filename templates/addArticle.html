@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block header %}
+    <link href="{{ url_for('static',filename='styles/addArticle.css') }}" type="text/css" rel="stylesheet">
+    <script type="text/javascript" src="{{ url_for('static',filename='js/addArticle.js') }}"></script>
+{% endblock %}
+
+{% block add_article %}
+    active
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-6">
+                <!-- Panel for project tree -->
+                <div class="panel panel-default">
+                    <div class="panel-heading"><h2>Articles</h2></div>
+                    <div class="panel-body full_y">
+                        <ul id="non_asso_articles">
+                            {%for article in non_associated_articles%}
+                                <li class="item">{{article[1]}}, {{ article[2] }}</li>
+                            {%endfor%}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <!-- Panel for solo articles -->
+                <div class="panel panel-default">
+                    <div class="panel-heading"><h2>Associated Articles</h2></div>
+                    <div class="panel-body full_y">
+                        <ul id="asso_articles">
+                            {%for article in proj_articles_nonsolo%}
+                                <li class="grey-item">{{article[1]}}, {{ article[2] }}</li>
+                            {%endfor%}
+
+                            {%for article in proj_articles_solo%}
+                                <li class="item">{{article[1]}}, {{ article[2] }}</li>
+                            {%endfor%}
+                        </ul>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

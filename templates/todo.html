@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 
 {% block header %}
-<link href="../static/styles/todo.css" type="text/css" rel="stylesheet"/>
+    <script type="text/javascript" src="{{ url_for('static',filename='js/todo.js') }}"></script>
+    <link href="{{ url_for('static',filename='styles/todo.css') }}" type="text/css" rel="stylesheet">
 {% endblock %}
 
 {% block todo %}active{% endblock %}
@@ -10,7 +11,7 @@
 <!-- Add Task to list -->
 <div class="header">
     <h2 class="head_title">Add Task</h2>
-    <form action="/todo", method="post">
+    <form action="{{url_for("todo", project_name=project_name)}}" method="post">
         <input type="text" id="comment" name="comment" placeholder="Add task here">
 
         <input type="submit" value="Submit" class="itemer">
@@ -24,6 +25,4 @@
         <li class="item">{{task}}</li>
     {%endfor%}
 </ul>
-
-<script type="text/javascript" src="../static/js/todo.js"></script>
 {% endblock %}

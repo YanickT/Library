@@ -1,36 +1,27 @@
-# Library
+# Library 2.0 (ALPHA RELEASE)
+
+!Attention! The current version is the alpha release of Libary 2.0.
+If you encounter any bug please report it!
 
 Library is a simple tool to structure papers and their connections.
-
-It is developed while my master thesis preparing, and was born by the urge to structure the papers I am currently reading.
-An example image can be seen below. 
-
-
-The titles of the articles were blurred out after taking the image.
-![Example image](images/example.png)
+It is based on the gravphiz software. Some example images can be seen 
+bellow. See images in the gallery.
 
 ## Requirements
 Parts of it are based on the gravphiz software. 
 It can be found at: https://graphviz.org/
 
 ## Notes
-I am developing and improving this tool currently.
-Furthermore, I am actively working with it and therefore 
-I am a little pragmatic corresponding to the look of the tool.
-Maybe it will be improved in the future.
-
 `os.startfile()` is used within this program (as far as I know Windows only). 
 It therefore may not be compatible with operating systems besides windows.
-I have added a few lines of code which should make it possible for linux too but have not tested it.
+I have added a few lines of code which should make it possible for linux/mac too but have not tested it.
 
+If you have any ideas how to improve or find bugs please tell me via the uploaded reports.
 
-If you have any ideas how to improve or find bugs please tell me.
-
-## Updates
-- BUGFIX: Graph of unconnected is no longer zoomed out
-- BUGFIX: Moving the cursor out of graph is no longer a problem when moving the graph
-- Added config file which preserves the current viewbox in the svg for the next loading
-
+## Update notes
+### Update to Version 2.0 (It is not compatible to Version 1.0)
+- Added projects to the workflow
+- Added summery option for articles
 
 ## Usage
 ### Setup
@@ -53,7 +44,7 @@ Install graphviz (software) and the required packages:
 
 #### If automatic setup does not work:
 Create a "path.py" and insert the following line:
-```PATH = "<your path were to add the working data>"```.
+```PATH = "<your absolute path where to add the working data>"```.
 
 Create an "Article" folder within `PATH`.
 Therefore, you should have such a structure (example):
@@ -68,27 +59,51 @@ In this example is `PATH = "...\Library"`
 
 
 ### Working 
-Place papers in the Articles directory at your path.
-You can open this folder when pressing the >Articles< button in the navbar. 
-The system will check all articles every start or if you press the >Library< button on the web page.
 
-Zoom with the mouse wheel in/out at the connected graph.
-Move the connected graph by pressing your left mouse button and move it around.
+#### Add articles
+To add articles to the program, place them in the directory of the programm.
+This directory can be accessed, when the 'Directory' button in the navbar is pressed.
+Articles within this directory will automatically added to the article list.
 
-To read a paper click at it while the >Read< section in the navbar is chosen.
-Similar for all the other actions (I think I made most relevant things accessible via a click).
+#### Setup a project
+The most outer part is a project. A project contains some articles, their connections, and some tasks which should be done.
+Articles can be assigned to different projects.
+However, the state and summary of the articles is synchronized between different projects.
 
-Click on a Connection to configure its properties.
-This can either be done in the >Dependencies< section or when clicking at a connection in the connected graph.
-If the connection does not have a comment yet, press at the arrowhead otherwise the comment will do.
+- A project can be created on the right side of the main page. The project name should not contain
+  any spaces. It can be altered or deleted using the other menus on the right side
+
+- To access a project just click on its name on the front page
+
+- To add articles to the project press the 'Associate Articles' button in the navbar.
+  On this document you can add articles. The articles on the left side are not yet associated.
+  To associate them, click at their names. They should switch to the right list.
+  To remove the association of articles on the right list, click on them too. 
+  However, if the article is part of a dependency to other articles on the project, it will be grey and non-clickable.
+  To remove such an article, delete the dependency first.
+
+- To update articles in the project, choose the 'Update Articles' part in the navbar. All associated articles
+  should be shown on this page. On the right side the unconnected articles are shown. On the left, bigger panel,
+  the connected articles and their dependencies are shown. Click on an article to open its summary and state panel.
+  On the left panel (the big textarea) a summary of the most important aspects of the paper can be written.
+  In the right pannel (smaller one) the stats of the papers are written. They can be changed. USE SUBMIT TO SAVE YOUR
+  CHANGES.
+
+- To read an article in the project, select the 'Read' part in the navbar. If you click on an article it should be opened
+  with the default program of your computer.
+
+- To add dependencies to an article, select the 'Depedencies' part in the navbar. Select the articles in the left panel
+  by pressing at their name. Use the 'Create dependency' button to create a dependency. The dependencies are shown
+  in a panel to the right. Clicking on them opens a configuration side. You can add a small reason for the connection,
+  which will be shown in the connection_graph. Moreover, you can delete the connection on this page.
+  However, you can also access this page by pressing at the connection in the read section.
+
+- To escape the project press on the projects name in the navbar. You will be forwarded back to the
+  main page with all projects listed.
 
 
-
-I think the other possibilities explain themselves.
-Maybe I will write something to this... some day (sorry :)).
-
-### Tipps:
-Place a run_library.py file at your Desktop.
+### Tips:
+Place a ```run_library.py``` file at your desktop.
 Insert:
 ```
 import os
@@ -101,9 +116,4 @@ os.startfile("<url to the website>")
 
 When you double-click it, the library is started, and your default browser will open the website.
 
-
-## TODO:
-- Improve paper update form
-- add non weight dependency
-- add summery option to paper
-- make paper green with a checkbox to indicate it is finished
+### Gallery

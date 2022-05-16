@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link href="{{ url_for('static',filename='styles/home.css') }}" type="text/css" rel="stylesheet">
 
     <meta charset="UTF-8">
     <title>Library</title>
@@ -16,14 +17,14 @@
     <nav class="navbar navbar-inverse">
       <div class="container-fluid">
         <div class="navbar-header">
-          <a class="navbar-brand" href="{{url_for('sync')}}">Library</a>
+          <a class="navbar-brand" href="{{url_for('home')}}">Library: {{ project_name }} </a>
         </div>
         <ul class="nav navbar-nav">
-          <li class="{% block home %}{% endblock %}"><a href="{{ url_for('home') }}">Read</a></li>
-          <li class="{% block update_page %}{% endblock %}"><a href="{{ url_for('update_page') }}">Update Papers</a></li>
-          <li class="{% block dependency %}{% endblock %}"><a href="{{ url_for('dependency') }}">Dependencies</a></li>
-          <li class="{% block todo %}{% endblock %}"><a href="{{url_for('todo')}}">TODO</a></li>
-          <li class="{% block articles %}{% endblock %}"><a href="{{url_for('open_article_folder')}}">Articles</a></li>
+          <li class="{% block project %}{% endblock %}"><a href="{{ url_for('project', project_name=project_name) }}">Read</a></li>
+          <li class="{% block update_page %}{% endblock %}"><a href="{{ url_for('update_page', project_name=project_name) }}">Update Articles</a></li>
+          <li class="{% block add_article %}{% endblock %}"><a href="{{ url_for('add_article_to_project', project_name=project_name) }}">Associate Articles</a></li>
+          <li class="{% block dependency %}{% endblock %}"><a href="{{ url_for('dependency', project_name=project_name) }}">Dependencies</a></li>
+          <li class="{% block todo %}{% endblock %}"><a href="{{url_for('todo', project_name=project_name)}}">Todo</a></li>
         </ul>
       </div>
     </nav>

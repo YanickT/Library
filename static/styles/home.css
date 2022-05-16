@@ -1,0 +1,53 @@
+h1 {
+    color: white;
+}
+
+/* Panels */
+.full_y {
+    height: calc(100vh - 200px);
+    overflow-y: auto;
+}
+
+.tight {
+    margin-bottom: 2px;
+}
+
+/* Forms */
+.line{
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+/* Lists */
+ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+a li.item {
+    cursor: pointer;
+    position: relative;
+    padding: 12px 8px 12px 40px;
+    background: #eee;
+    font-size: 18px;
+    transition: 0.2s;
+}
+
+a:nth-child(odd) li{
+    background: #F5F5F5;
+}
+
+a:nth-child(even) li{
+    background: #222222;
+    color: white;
+}
+
+li.item:hover {
+    background: #ddd;
+}
+
+.half_y {
+    height: calc(100vh - 360px);
+    overflow-y: auto;
+}

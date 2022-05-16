@@ -1,109 +1,41 @@
-// adjust size of svgs
-function resize() {
-    var wrapper = document.getElementById("wrapper");
-    var width = wrapper.getBoundingClientRect()["width"] - 40;
-    var height = wrapper.getBoundingClientRect()["height"];
-    var svg = document.getElementsByTagName("svg")[0];
-    svg.setAttribute("width", width);
-    svg.setAttribute("height", height);
-
-    var wrapper_solo = document.getElementById("solo_wrapper");
-    var width = wrapper_solo.getBoundingClientRect()["width"] - 40;
-    var svg_2 = document.getElementsByTagName("svg")[1];
-    svg_2.setAttribute("width", width);
-}
-
-// adjust size for loading
-resize()
-
-// zoom with mouse wheel
-const zoomfactor = 0.1;
-
-function zoom(event) {
-    event.preventDefault();
-    var svg = document.getElementsByTagName("svg")[0];
-    if (event["deltaY"] < 0) {
-        var modi = 1;
-    } else {
-        var modi = -1;
+function rm_check(event) {
+    if (event.target.project_name.value === '') {
+        alert("No name for project specified");
+        event.preventDefault();
+        return false;
     }
-
-    var viewbox = svg.getAttribute("viewBox");
-    var sizes = viewbox.split(" ").map(Number);
-    var dw = sizes[2] * modi * zoomfactor;
-    var dh = sizes[3] * modi * zoomfactor;
-    sizes[2] -= dw;
-    sizes[3] -= dh;
-
-    sizes = sizes.map(String);
-    svg.setAttribute("viewBox", sizes.join(" "));
-}
-
-wrapper.onwheel = zoom;
-
-
-// move svg with mouse
-var position = {x: 0, y: 0};
-var run = false;
-
-function move(event) {
-    event.preventDefault();
-    if (run) {
-        var mouse = {x: event.pageX, y: event.pageY};
-        var svg = document.getElementsByTagName("svg")[0];
-        var viewbox = svg.getAttribute("viewBox");
-        var sizes = viewbox.split(" ").map(Number);
-
-        var dx = position["x"] - mouse["x"];
-        var dy = position["y"] - mouse["y"];
-
-        sizes[0] += dx;
-        sizes[1] += dy;
-        sizes = sizes.map(String);
-
-        svg.setAttribute("viewBox", sizes.join(" "));
-
-        position["x"] = mouse["x"];
-        position["y"] = mouse["y"];
-
+    if (!event.target.remove.checked) {
+        alert("Accept Checkbox to remove project");
+        event.preventDefault();
+        return false;
     }
 }
 
-function start(event) {
-    event.preventDefault();
-    position = {x: event.pageX, y: event.pageY};
-    document.body.style.cursor = 'move';
-    run = true;
+function rn_check(event) {
+    if (event.target.project_name_old.value === '' || event.target.project_name_new.value === '') {
+        alert("No name for project specified");
+        event.preventDefault();
+        return false;
+    }
+    if (event.target.project_name_new.value.includes(" ")){
+        alert("Avoid space in the project names! Use '_' instead")
+        event.preventDefault();
+        return false;
+    }
+
 }
 
-function end(event) {
-    event.preventDefault();
-    position = {x: event.pageX, y: event.pageY};
-    document.body.style.cursor = 'auto'
-    run = false;
-}
+function add_check(event) {
+    console.log(event.target.project_name.value.includes(" "))
+    if (event.target.project_name.value === '') {
+        alert("No name for project specified");
+        event.preventDefault();
+        return false;
+    }
 
-var svg = document.getElementsByTagName("svg")[0];
-document.onmousemove = move;
-svg.onmousedown = start;
-document.onmouseup = end;
-
-
-// save current zoom when closing window
-window.onbeforeunload = function () {
-    var svg = document.getElementsByTagName("svg")[0];
-    var viewbox = svg.getAttribute("viewBox");
-
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "/zoom", true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.send(JSON.stringify({'viewbox': viewbox}));
-
-};
-
-
-// zoom window at correct position at the start
-function zoom_section(viewbox){
-    var svg = document.getElementsByTagName("svg")[0];
-    svg.setAttribute("viewBox", viewbox);
+    if (event.target.project_name.value.includes(" ")){
+        alert("Avoid space in the project names! Use '_' instead")
+        event.preventDefault();
+        return false;
+    }
 }

@@ -1,13 +1,89 @@
-from flask import Flask, render_template, send_from_directory, request, redirect, url_for
-from administration import BASE, CONFIG
+from flask import Flask, render_template, request, redirect, url_for
+from backend_sql import BASE, ARTPATH
 import os
 import sys
 import subprocess
 
-
 app = Flask(__name__)
 
+# ==================================Projects===============================================
+get_names = lambda x: x if not x else [e[0] for e in x]
 
+
+@app.route("/")
+def home():
+    BASE.sync()
+    projects = get_names(BASE.get("projects", "name"))[::-1]
+    return render_template('home.html', projects=projects)
+
+
+@app.route("/remove_project", methods=["POST"])
+def remove_project():
+    if request.form["project_name"] in get_names(BASE.get("projects", "name")):
+        project_id = BASE.get("projects", "project_id", name=request.form["project_name"])[0][0]
+        BASE.drop("depends", project_id=project_id)
+        BASE.drop("articles_project", project_id=project_id)
+        BASE.drop("tasks", project_id=project_id)
+        BASE.drop("projects", project_id=project_id)
+    return redirect(url_for("home"))
+
+
+@app.route("/add_project", methods=["POST"])
+def add_project():
+    if not (request.form["project_name"] in get_names(BASE.get("projects", "name"))):
+        BASE.add("projects", (request.form["project_name"]))
+    return redirect(url_for("home"))
+
+
+@app.route("/rename_project", methods=["POST"])
+def rename_project():
+    if request.form["project_name_old"] in get_names(BASE.get("projects", "name")) and not (
+            request.form["project_name_new"] in get_names(BASE.get("projects", "name"))):
+        BASE.update("projects", "name", request.form["project_name_new"], name=request.form["project_name_old"])
+    return redirect(url_for("home"))
+
+
+# ==================================Projects===============================================
+# ===================================Project===============================================
+
+
+@app.route("/project/<project_name>")
+def project(project_name):
+    solo_graph = BASE.get_solo_graph(project_name, url=f"{project_name}/read")
+    main_graph = BASE.get_main_graph(project_name, url=f"{project_name}/read")
+    return render_template("project.html", project_name=project_name, solo_graph=solo_graph, project_home=True,
+                           main_graph=main_graph)
+
+
+@app.route("/project/<project_name>/add_article/", methods=["GET", "POST"])
+def add_article_to_project(project_name):
+    if request.method == "POST":
+        BASE.reset_project(project_name)
+        if "associate" in request.json:
+            article_name = ",".join(request.json["associate"].split(",")[:-1])
+            article_id = BASE.get("articles", "article_id", title=article_name)[0][0]
+            project_id = BASE.get("projects", "project_id", name=project_name)[0][0]
+            BASE.add("articles_project", article_id, project_id)
+        elif "unassociate" in request.json:
+            article_name = ",".join(request.json["unassociate"].split(",")[:-1])
+            article_id = BASE.get("articles", "article_id", title=article_name)[0][0]
+            project_id = BASE.get("projects", "project_id", name=project_name)[0][0]
+            BASE.drop("articles_project", article_id=article_id, project_id=project_id)
+
+    articles = BASE.get("articles", "article_id", "title", "author", "pages", "cur_page")
+    proj_articles_solo = BASE.get_project_articles_solo(project_name)
+    proj_articles_nonsolo = BASE.get_project_articles_nonsolo(project_name)
+    non_associated_articles = [article for article in articles if
+                               not (article in proj_articles_nonsolo or article in proj_articles_solo)]
+
+    return render_template("addArticle.html", project_name=project_name,
+                           non_associated_articles=non_associated_articles,
+                           proj_articles_solo=proj_articles_solo,
+                           proj_articles_nonsolo=proj_articles_nonsolo)
+
+
+# ===================================Project===============================================
+# ===================================Filesystem============================================
 # open_file is taken from:
 # https://stackoverflow.com/questions/17317219/is-there-an-platform-independent-equivalent-of-os-startfile
 def open_file(filename):
@@ -18,90 +94,98 @@ def open_file(filename):
         subprocess.call([opener, filename])
 
 
-@app.route('/')
-def home():
-    main_graph, solo_graph = BASE.get_dependency_graph("/articles", "/dependency")
-    return render_template('home.html', main_graph=main_graph, solo_graph=solo_graph, viewbox=CONFIG["viewbox"])
-
-
-@app.route('/zoom', methods=['POST'])
-def zoom():
-    CONFIG("viewbox", request.json["viewbox"])
-    return "dummy"
-
-
-@app.route('/sync')
-def sync():
-    BASE.sync()
-    CONFIG("viewbox", None)
+@app.route('/oaf')
+def open_article_folder():
+    open_file(ARTPATH)
     return redirect(url_for("home"))
 
 
-@app.route('/update')
-def update_page():
-    main_graph, solo_graph = BASE.get_dependency_graph("/update", "/dependency")
-    return render_template('home_update.html', main_graph=main_graph, solo_graph=solo_graph, viewbox=CONFIG["viewbox"])
+# ===================================Filesystem============================================
+# ===================================Article===============================================
 
 
-@app.route('/update/<article>', methods=['POST', 'GET'])
-def update_article(article: int):
+@app.route('/project/<project_name>/update')
+def update_page(project_name):
+    BASE.reset_project(project_name)
+    solo_graph = BASE.get_solo_graph(project_name, url=f"update/")
+    main_graph = BASE.get_main_graph(project_name, url=f"update/")
+    return render_template("project.html", project_name=project_name, solo_graph=solo_graph, project_home=False,
+                           main_graph=main_graph)
+
+
+@app.route('/project/<project_name>/update/<article>', methods=['POST', 'GET'])
+def update_article(project_name, article: int):
     if request.method == "GET":
         return render_template('paper_update.html',
                                title=BASE.get("articles", "title", article_id=int(article))[0][0],
                                author=BASE.get("articles", "author", article_id=int(article))[0][0],
                                pages=BASE.get("articles", "pages", article_id=int(article))[0][0],
                                cur_page=BASE.get("articles", "cur_page", article_id=int(article))[0][0],
-                               article=article)
-    else:
-        BASE.update("articles", "cur_page", int(request.form["page"]), article_id=int(article))
+                               article=article,
+                               summary=BASE.get("articles", "summary", article_id=int(article))[0][0],
+                               project_name=project_name)
+    elif request.method == "POST":
+        BASE.reset_project(project_name)
         BASE.update("articles", "title", request.form["title"], article_id=int(article))
         BASE.update("articles", "author", request.form["author"], article_id=int(article))
-        return redirect(url_for("update_page"))
+        BASE.update("articles", "cur_page", request.form["page"], article_id=int(article))
+        BASE.update("articles", "summary", request.form["summary"], article_id=int(article))
+        return redirect(url_for("update_page", project_name=project_name))
 
 
-@app.route('/articles/<article>')
-def get_article(article: int):
-    # open if extern connection is made possible (within LAN only)
-    if not request.remote_addr == request.host and False:
-        return send_from_directory(BASE.get_path(), BASE.get("articles", "filename", article_id=int(article))[0][0])
-
-    open_file(BASE.get_path() + BASE.get("articles", "filename", article_id=int(article))[0][0])
-    return redirect(url_for("home"))
+@app.route('/project/<project_name>/read/<article>')
+def open_article(project_name, article: int):
+    open_file(ARTPATH + BASE.get("articles", "filename", article_id=int(article))[0][0])
+    return redirect(url_for("project", project_name=project_name))
 
 
-@app.route('/todo', methods=['POST', 'GET'])
-def todo():
+# ===================================Article===============================================
+# =====================================TO_DO===============================================
+
+@app.route('/project/<project_name>/todo', methods=['POST', 'GET'])
+def todo(project_name):
+    project_id = BASE.get("projects", "project_id", name=project_name)[0][0]
     if request.method == "POST":
         if request.form:
-            BASE.add("tasks", request.form["comment"])
+            BASE.add("tasks", request.form["comment"], project_id)
         else:
             BASE.drop("tasks", comment=request.json["remove"])
 
-    return render_template('todo.html', tasks=[task[0] for task in BASE.get("tasks", "comment")])
+    tasks = [task[0] for task in BASE.get("tasks", "comment", project_id=project_id)]
+    return render_template("todo.html", tasks=tasks, project_name=project_name)
 
 
-@app.route('/dependency', methods=['POST', 'GET'])
-def dependency():
+# =====================================TO_DO===============================================
+# ==================================DEPENDENCY=============================================
+
+@app.route('/project/<project_name>/dependency', methods=['POST', 'GET'])
+def dependency(project_name):
+    project_id = BASE.get("projects", "project_id", name=project_name)[0][0]
     if request.method == "POST":
+        BASE.reset_project(project_name)
         for child in request.json["childs"]:
-            BASE.add("depends", int(request.json["parent"]), int(child), "")
-    articles = BASE.get("articles", "article_id", "title", "author")
-    return render_template('dependency.html', articles=articles, depends=BASE.get("depends", "*"))
+            BASE.add("depends", int(request.json["parent"]), int(child), "", project_id)
+    proj_articles = BASE.get_project_articles_solo(project_name) + BASE.get_project_articles_nonsolo(project_name)
+    proj_articles = [article[:3] for article in proj_articles]
+    depends = BASE.get("depends", "depend_id, article_id, child_id, comment", project_id=project_id)
+    return render_template("dependency.html", articles=proj_articles, depends=depends, project_name=project_name)
 
 
-@app.route('/dependency/<index>', methods=['POST', 'GET'])
-def dependency_edit(index):
+@app.route('/project/<project_name>/dependency/<index>', methods=['POST', 'GET'])
+def dependency_edit(project_name, index):
     if request.method == "POST":
+        BASE.reset_project(project_name)
         if request.form["action"] == "Submit":
             BASE.update("depends", "comment", request.form["comment"], depend_id=int(index))
         elif request.form["action"] == "Delete":
-            print("Drop")
             BASE.drop("depends", depend_id=index)
 
-        return redirect(url_for("dependency"))
+        return redirect(url_for("dependency", project_name=project_name))
 
-    depend_id, parent_id, child_id, comment = BASE.get("depends", "*", depend_id=int(index))[0]
+    depend_id, parent_id, child_id, comment = \
+        BASE.get("depends", "depend_id, article_id, child_id, comment", depend_id=int(index))[0]
     return render_template("dependency_update.html",
+                           project_name=project_name,
                            depend_id=depend_id,
                            comment=comment,
                            title_parent=BASE.get("articles", "title", article_id=int(parent_id))[0][0],
@@ -109,13 +193,4 @@ def dependency_edit(index):
                            title_child=BASE.get("articles", "title", article_id=int(child_id))[0][0],
                            author_child=BASE.get("articles", "author", article_id=int(child_id))[0][0])
 
-
-@app.route('/add')
-def open_article_folder():
-    open_file(BASE.get_path())
-    return redirect(url_for("home"))
-
-
-if __name__ == "__main__":
-    app.run()
-
+# ==================================DEPENDENCY=============================================

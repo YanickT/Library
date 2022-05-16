@@ -1,20 +1,39 @@
 {% extends "base.html" %}
 
+
 {% block update_page %}active{% endblock %}
 
+
 {% block body %}
-<div class="container">
-    <form action="/update/{{article}}", method="post">
-        <label for="title">Title:</label><br>
-        <input type="text" id="title" name="title" value='{{ title }}'><br>
+    <form action="/project/{{ project_name }}/update/{{ article }}" method="post">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-9">
+                    <div class="panel panel-default">
+                        <div class="panel-heading"><h2>Summary</h2></div>
+                        <div class="panel-body full_y">
+                            <textarea name="summary" class="full_y line">{{ summary }}</textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="panel panel-default">
+                        <div class="panel-heading"><h2>Attributes</h2></div>
+                        <div class="panel-body full_y">
+                            <label for="title">Title:</label><br>
+                            <input type="text" class="line" id="title" name="title" value='{{ title }}'><br>
 
-        <label for="author">Author:</label><br>
-        <input type="text" id="author" name="author" value='{{ author }}'><br>
+                            <label for="author">Author:</label><br>
+                            <input type="text" class="line" id="author" name="author" value='{{ author }}'><br>
 
-        <label for="page">Current Page:</label><br>
-        <input type="number" id="page" name="page" value='{{ cur_page }}'> / {{pages}}<br>
+                            <label for="page">Current Page / {{pages}}:</label><br>
+                            <input type="number" class="line" id="page" name="page" value='{{ cur_page }}'> <br>
 
-        <input type="submit" value="Submit">
+                            <input type="submit" class="line" value="Submit">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </form>
-</div>
 {% endblock %}

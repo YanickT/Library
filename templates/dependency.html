@@ -1,8 +1,11 @@
 {% extends "base.html" %}
 
+
 {% block header %}
-<link href="../static/styles/dependency.css" type="text/css" rel="stylesheet"/>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/dependency.js') }}"></script>
+    <link href="{{ url_for('static', filename='styles/addArticle.css') }}" type="text/css" rel="stylesheet">
 {% endblock %}
+
 
 {% block dependency %}active{% endblock %}
 
@@ -14,7 +17,7 @@
         <div class="col-sm-4">
             <div class="panel panel-default">
                 <div class="panel-heading"><h2>Articles</h2></div>
-                <div class="panel-body">
+                <div class="panel-body full_y">
                     <ul id="article-holder">
                         {%for article_id, article, author in articles%}
                             <li class="item article">[{{article_id}}] {{article}} ({{author}})</li>
@@ -27,7 +30,7 @@
         <div class="col-sm-4">
             <div class="panel panel-default">
                 <div class="panel-heading"><h2>Connection</h2></div>
-                <div class="panel-body">
+                <div class="panel-body full_y">
                     <h3>Parent article:</h3>
                     <ul>
                         <li class="item selected" id="parent"></li>
@@ -42,7 +45,7 @@
         <div class="col-sm-4">
             <div class="panel panel-default">
                 <div class="panel-heading"><h2>Dependencies</h2></div>
-                <div class="panel-body">
+                <div class="panel-body full_y">
                     <ul id="depends-holder">
                         {%for id_, parent, child, comment in depends%}
                             {% if comment != "" %}
@@ -57,6 +60,4 @@
         </div>
     </div>
 </div>
-
-<script type="text/javascript" src="../static/js/dependency.js"></script>
 {% endblock %}
