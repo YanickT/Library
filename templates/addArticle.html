@@ -19,7 +19,7 @@
                     <div class="panel-body full_y">
                         <ul id="non_asso_articles">
                             {%for article in non_associated_articles%}
-                                <li class="item">{{article[1]}}, {{ article[2] }}</li>
+                                <li class="item">{{article[1]}}: {{ article[2] }}</li>
                             {%endfor%}
                         </ul>
                     </div>
@@ -32,11 +32,11 @@
                     <div class="panel-body full_y">
                         <ul id="asso_articles">
                             {%for article in proj_articles_nonsolo%}
-                                <li class="grey-item">{{article[1]}}, {{ article[2] }}</li>
+                                <li class="grey-item">{{article[1]}}: {{ article[2] }}</li>
                             {%endfor%}
 
                             {%for article in proj_articles_solo%}
-                                <li class="item">{{article[1]}}, {{ article[2] }}</li>
+                                <li class="item">{{article[1]}}: {{ article[2] }}</li>
                             {%endfor%}
                         </ul>
 

@@ -217,7 +217,7 @@ class Connection:
             solo_graph.body.append(NODE(index, title, author, curpage / pages, url))
 
         solo_img = solo_graph.pipe(format='svg').replace(b"\r\n", b"").decode('utf-8')
-        solo_img = solo_img.replace("l_", "solo_l_")
+        # solo_img = solo_img.replace("l_", "solo_l_")
         self.solo_images[(project_name, url)] = solo_img
         return solo_img
 

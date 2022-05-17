@@ -1,4 +1,4 @@
-# Library 2.0 (ALPHA RELEASE)
+# Library 2.1 (ALPHA RELEASE)
 
 !Attention! The current version is the alpha release of Libary 2.0.
 If you encounter any bug please report it!
@@ -22,6 +22,11 @@ If you have any ideas how to improve or find bugs please tell me via the uploade
 ### Update to Version 2.0 (It is not compatible to Version 1.0)
 - Added projects to the workflow
 - Added summery option for articles
+
+### Update to Version 2.1
+- BUGFIX: URL mistake in solograph
+- BUGFIX: app.run() missing at end of file
+- BUGFIX: changed ','-separator in associate articles to ':' to avoid problems with multi authors
 
 ## Usage
 ### Setup

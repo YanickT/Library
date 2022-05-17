@@ -60,12 +60,12 @@ def add_article_to_project(project_name):
     if request.method == "POST":
         BASE.reset_project(project_name)
         if "associate" in request.json:
-            article_name = ",".join(request.json["associate"].split(",")[:-1])
+            article_name = ":".join(request.json["associate"].split(":")[:-1])
             article_id = BASE.get("articles", "article_id", title=article_name)[0][0]
             project_id = BASE.get("projects", "project_id", name=project_name)[0][0]
             BASE.add("articles_project", article_id, project_id)
         elif "unassociate" in request.json:
-            article_name = ",".join(request.json["unassociate"].split(",")[:-1])
+            article_name = article_name = ":".join(request.json["unassociate"].split(":")[:-1])
             article_id = BASE.get("articles", "article_id", title=article_name)[0][0]
             project_id = BASE.get("projects", "project_id", name=project_name)[0][0]
             BASE.drop("articles_project", article_id=article_id, project_id=project_id)
@@ -193,4 +193,8 @@ def dependency_edit(project_name, index):
                            title_child=BASE.get("articles", "title", article_id=int(child_id))[0][0],
                            author_child=BASE.get("articles", "author", article_id=int(child_id))[0][0])
 
+
 # ==================================DEPENDENCY=============================================
+
+if __name__ == "__main__":
+    app.run()
