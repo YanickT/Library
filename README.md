@@ -1,4 +1,4 @@
-# Library 2.0.1 (ALPHA RELEASE)
+# Library 2.0.2
 
 !Attention! The current version is the alpha release of Libary 2.0.
 If you encounter any bug please report it!
