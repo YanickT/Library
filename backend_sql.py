@@ -3,10 +3,12 @@ from path import PATH
 import graphviz
 from PyPDF2 import PdfFileReader
 import os
+import pickle
 
 VERSION = 2.0
 ARTPATH = PATH + "Article/"
 ARTICLEFILE = "article.db"
+CONFIGFILE = ".config"
 TABLES = [
     """
     CREATE TABLE IF NOT EXISTS articles (
@@ -221,7 +223,7 @@ class Connection:
         self.solo_images[(project_name, url)] = solo_img
         return solo_img
 
-    def get_main_graph(self, project_name, url):
+    def get_main_graph(self, project_name, url, dep_url):
         if (project_name, url) in self.connected_images:
             return self.connected_images[(project_name, url)]
 
@@ -239,7 +241,7 @@ class Connection:
 
         # add edges
         for index, from_, to_, comment, project_id in depends:
-            graph.edge(f"N{from_}", f"N{to_}", comment, URL=f"{url}/{index}", headport="n", tailport="s")
+            graph.edge(f"N{from_}", f"N{to_}", comment, URL=f"{dep_url}/{index}", headport="n", tailport="s")
 
         img = graph.pipe(format='svg').replace(b"\r\n", b"").decode('utf-8')
         self.connected_images[(project_name, url)] = img
@@ -259,3 +261,28 @@ class Connection:
 
 BASE = Connection()
 BASE.sync()
+
+
+class ConfigHandler:
+
+    def __init__(self):
+        # check if config file already exists
+        if not os.path.isfile(PATH + CONFIGFILE):
+            with open(PATH + CONFIGFILE, "wb") as doc:
+                pickle.dump({"version": VERSION}, doc)
+
+    def __getitem__(self, item):
+        with open(PATH + CONFIGFILE, "rb") as doc:
+            data = pickle.load(doc)
+
+        return data.get(item)
+
+    def __call__(self, key, value):
+        with open(PATH + CONFIGFILE, "rb") as doc:
+            data = pickle.load(doc)
+        with open(PATH + CONFIGFILE, "wb") as doc:
+            data[key] = value
+            pickle.dump(data, doc)
+
+
+CONFIG = ConfigHandler()

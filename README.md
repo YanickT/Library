@@ -1,4 +1,4 @@
-# Library 2.1 (ALPHA RELEASE)
+# Library 2.0.1 (ALPHA RELEASE)
 
 !Attention! The current version is the alpha release of Libary 2.0.
 If you encounter any bug please report it!
@@ -23,10 +23,16 @@ If you have any ideas how to improve or find bugs please tell me via the uploade
 - Added projects to the workflow
 - Added summery option for articles
 
-### Update to Version 2.1
+### Update to Version 2.0.1
 - BUGFIX: URL mistake in solograph
 - BUGFIX: app.run() missing at end of file
 - BUGFIX: changed ','-separator in associate articles to ':' to avoid problems with multi authors
+
+### Update to Version 2.0.2
+- BUGFIX: scaling of solo image
+- BUGFIX: clicking on dependencies now opens the dependency page
+- Added zooming in main image
+- Added images to gallery
 
 ## Usage
 ### Setup
@@ -106,6 +112,10 @@ However, the state and summary of the articles is synchronized between different
 - To escape the project press on the projects name in the navbar. You will be forwarded back to the
   main page with all projects listed.
 
+#### Working in a project
+- Using the mouse (wheel and press and move) the image of connected articles can be zoomed and moved
+- The dependencies are clickable and will open the dependency page
+- The Todos are removed when clicking on them
 
 ### Tips:
 Place a ```run_library.py``` file at your desktop.
@@ -122,3 +132,14 @@ os.startfile("<url to the website>")
 When you double-click it, the library is started, and your default browser will open the website.
 
 ### Gallery
+![image of main page with projects](gallery/projects.png)
+![image of project page with articles](gallery/project.png)
+![image of project page with articles to update](gallery/update_articles.png)
+![image of project page where the articles are updated](gallery/article_update_page.png)
+![image of association page](gallery/associate_articles.png)
+![image of project page with the todo list](gallery/todo.png)
+![image of project page where the dependencies can be created](gallery/depedencies.png)
+![image of project page of a dependency](gallery/dependency.png)
+
+### Planed features:
+- search option in associate articles

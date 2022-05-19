@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for
-from backend_sql import BASE, ARTPATH
+from backend_sql import BASE, ARTPATH, CONFIG
 import os
 import sys
 import subprocess
@@ -47,12 +47,13 @@ def rename_project():
 # ===================================Project===============================================
 
 
-@app.route("/project/<project_name>")
+@app.route("/project/<project_name>", methods=['POST', 'GET'])
 def project(project_name):
     solo_graph = BASE.get_solo_graph(project_name, url=f"{project_name}/read")
-    main_graph = BASE.get_main_graph(project_name, url=f"{project_name}/read")
+    main_graph = BASE.get_main_graph(project_name, url=f"{project_name}/read",
+                                     dep_url=url_for("dependency", project_name=project_name))
     return render_template("project.html", project_name=project_name, solo_graph=solo_graph, project_home=True,
-                           main_graph=main_graph)
+                           main_graph=main_graph, viewbox=CONFIG[f"{project_name}_viewbox"])
 
 
 @app.route("/project/<project_name>/add_article/", methods=["GET", "POST"])
@@ -65,7 +66,7 @@ def add_article_to_project(project_name):
             project_id = BASE.get("projects", "project_id", name=project_name)[0][0]
             BASE.add("articles_project", article_id, project_id)
         elif "unassociate" in request.json:
-            article_name = article_name = ":".join(request.json["unassociate"].split(":")[:-1])
+            article_name = ":".join(request.json["unassociate"].split(":")[:-1])
             article_id = BASE.get("articles", "article_id", title=article_name)[0][0]
             project_id = BASE.get("projects", "project_id", name=project_name)[0][0]
             BASE.drop("articles_project", article_id=article_id, project_id=project_id)
@@ -81,6 +82,11 @@ def add_article_to_project(project_name):
                            proj_articles_solo=proj_articles_solo,
                            proj_articles_nonsolo=proj_articles_nonsolo)
 
+
+@app.route("/project/<project_name>/close", methods=['POST'])
+def close(project_name):
+    CONFIG(f"{project_name}_viewbox", request.json["viewbox"])
+    return "Close"
 
 # ===================================Project===============================================
 # ===================================Filesystem============================================
@@ -108,9 +114,10 @@ def open_article_folder():
 def update_page(project_name):
     BASE.reset_project(project_name)
     solo_graph = BASE.get_solo_graph(project_name, url=f"update/")
-    main_graph = BASE.get_main_graph(project_name, url=f"update/")
+    main_graph = BASE.get_main_graph(project_name, url=f"update/",
+                                     dep_url=url_for("dependency", project_name=project_name))
     return render_template("project.html", project_name=project_name, solo_graph=solo_graph, project_home=False,
-                           main_graph=main_graph)
+                           main_graph=main_graph, viewbox=CONFIG[f"{project_name}_viewbox"])
 
 
 @app.route('/project/<project_name>/update/<article>', methods=['POST', 'GET'])
