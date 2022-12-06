@@ -1,8 +1,5 @@
 # Library 2.0.2
 
-!Attention! The current version is the alpha release of Libary 2.0.
-If you encounter any bug please report it!
-
 Library is a simple tool to structure papers and their connections.
 It is based on the gravphiz software. Some example images can be seen 
 bellow. See images in the gallery.
@@ -47,7 +44,7 @@ Install graphviz (software) and the required packages:
 2. Control if all three checkmarks are set in the REQUIREMENTS-frame (cf. Image bellow)
 3. Select a path and create the folders
 
-![Setup image](images/setup.png)
+![Setup image](gallery/setup.png)
 
 #### Getting to the GUI (graphical user interface)
 1. Start the main.py
