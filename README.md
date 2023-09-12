@@ -30,6 +30,9 @@ If you have any ideas how to improve or find bugs please tell me via the uploade
 - BUGFIX: clicking on dependencies now opens the dependency page
 - Added zooming in main image
 - Added images to gallery
+- 
+### Update to Version 2.1.0
+- Added markdown support for summery
 
 ## Usage
 ### Setup

@@ -1,4 +1,4 @@
-h1 {
+.header {
     color: white;
 }
 
@@ -51,3 +51,5 @@ li.item:hover {
     height: calc(100vh - 360px);
     overflow-y: auto;
 }
+
+.ignore-css{all:unset;}
