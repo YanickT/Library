@@ -3,6 +3,11 @@
 
 {% block update_page %}active{% endblock %}
 
+{% block header %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+{% endblock %}
+
 
 {% block body %}
     <form action="/project/{{ project_name }}/update/{{ article }}" method="post">
@@ -12,7 +17,7 @@
                     <div class="panel panel-default">
                         <div class="panel-heading"><h2>Summary</h2></div>
                         <div class="panel-body full_y">
-                            <textarea name="summary" class="full_y line">{{ summary }}</textarea>
+                            <textarea id="summery" name="summary" class="full_y line">{{ summary }}</textarea>
                         </div>
                     </div>
                 </div>
@@ -26,7 +31,7 @@
                             <label for="author">Author:</label><br>
                             <input type="text" class="line" id="author" name="author" value='{{ author }}'><br>
 
-                            <label for="page">Current Page / {{pages}}:</label><br>
+                            <label for="page">Current Page / {{ pages }}:</label><br>
                             <input type="number" class="line" id="page" name="page" value='{{ cur_page }}'> <br>
 
                             <input type="submit" class="line" value="Submit">
@@ -36,4 +41,7 @@
             </div>
         </div>
     </form>
+    <script>
+        const easyMDE = new EasyMDE({element: document.getElementById("summery")});
+    </script>
 {% endblock %}
